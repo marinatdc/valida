@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Valida+ | Controle de Validade</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+        crossorigin="anonymous"
+    >
+
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <section id="loginScreen" class="min-vh-100 d-flex align-items-center py-4">
+        <div class="container">
+            <div class="card login-shell border-0 overflow-hidden mx-auto">
+                <div class="row g-0">
+                    <div class="col-lg-7 login-brand d-flex align-items-start">
+                        <div class="brand-mark brand-mark-light">V+</div>
+                        <div>
+                            <span class="eyebrow text-white-50">APPJAM EXPOAGAS 2026</span>
+                            <h1 class="display-5 fw-bold mt-2 mb-2">Valida+</h1>
+                            <p class="mb-0 text-white-50 login-description">
+                                Controle de validade e apoio à decisão para prevenção de perdas no varejo.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="h-100 d-flex flex-column justify-content-center p-4 p-lg-5">
+                            <span class="eyebrow">ACESSO DEMONSTRATIVO</span>
+                            <h2 class="h4 fw-bold mt-2 mb-1">Entrar no sistema</h2>
+                            <p class="small text-secondary mb-4">Escolha um perfil para visualizar seu fluxo de trabalho.</p>
+
+                            <label for="roleSelect" class="form-label small fw-semibold">Perfil</label>
+                            <select id="roleSelect" class="form-select">
+                                <option value="worker">Encarregado de Estoque</option>
+                                <option value="manager">Gestor da Loja</option>
+                            </select>
+
+                            <button id="loginButton" class="btn btn-dark w-100 mt-3">Entrar</button>
+                            <small class="text-secondary text-center mt-3">Protótipo acadêmico com dados simulados.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="app" class="d-none">
+        <nav class="navbar bg-white border-bottom sticky-top app-navbar">
+            <div class="container">
+                <div class="navbar-brand d-flex align-items-center gap-2 mb-0">
+                    <div class="brand-mark">V+</div>
+                    <div>
+                        <strong class="d-block fs-6">Valida+</strong>
+                        <small class="d-block text-secondary store-name">Loja Centro</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end d-none d-sm-block">
+                        <small class="d-block text-secondary profile-caption">Perfil atual</small>
+                        <strong id="currentRoleLabel" class="profile-name">Usuário</strong>
+                    </div>
+                    <button id="logoutButton" class="btn btn-outline-secondary btn-sm">Sair</button>
+                </div>
+            </div>
+        </nav>
+
+        <main id="workerView" class="container py-4 py-lg-5 d-none">
+            <div class="mb-4">
+                <span class="eyebrow">OPERAÇÃO · LOJA CENTRO</span>
+                <h1 class="page-title mt-2 mb-1">Produtos em atenção</h1>
+                <p class="text-secondary mb-0">Acompanhe validade, risco de perda e possíveis problemas de abastecimento.</p>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body d-flex gap-3">
+                            <div class="metric-icon metric-danger">!</div>
+                            <div>
+                                <span class="metric-label">Perdas críticas</span>
+                                <strong id="workerUrgent" class="metric-value">0</strong>
+                                <small class="metric-description">Alto risco por validade</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body d-flex gap-3">
+                            <div class="metric-icon metric-rupture">↓</div>
+                            <div>
+                                <span class="metric-label">Risco de ruptura</span>
+                                <strong id="workerRupture" class="metric-value">0</strong>
+                                <small class="metric-description">Cobertura insuficiente</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body d-flex gap-3">
+                            <div class="metric-icon metric-warning">…</div>
+                            <div>
+                                <span class="metric-label">Aguardando gestor</span>
+                                <strong id="workerPending" class="metric-value">0</strong>
+                                <small class="metric-description">Recomendações pendentes</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body d-flex gap-3">
+                            <div class="metric-icon metric-success">✓</div>
+                            <div>
+                                <span class="metric-label">Ações aprovadas</span>
+                                <strong id="workerApproved" class="metric-value">0</strong>
+                                <small class="metric-description">Prontas para execução</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card app-card">
+                <div class="card-body p-0">
+                    <div class="p-4 border-bottom">
+                        <span class="eyebrow">PRIORIDADES</span>
+                        <h2 class="h6 fw-bold mt-2 mb-1">Estoque para verificar</h2>
+                        <p class="small text-secondary mb-0">Clique em um produto para visualizar sua situação.</p>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 app-table">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>EAN</th>
+                                    <th>Estoque</th>
+                                    <th>Prazo</th>
+                                    <th>Sobra prevista</th>
+                                    <th>Situação</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="workerProductTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main id="managerView" class="container py-4 py-lg-5 d-none">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3 mb-4">
+                <div>
+                    <span class="eyebrow">GESTÃO · LOJA CENTRO</span>
+                    <h1 class="page-title mt-2 mb-1">Controle de perdas</h1>
+                    <p class="text-secondary mb-0">Visualize os produtos em atenção e revise as ações sugeridas.</p>
+                </div>
+                <button id="resetDemoButton" class="btn btn-outline-secondary btn-sm">Restaurar demonstração</button>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body d-flex gap-3">
+                            <div class="metric-icon metric-danger">R$</div>
+                            <div>
+                                <span class="metric-label">Perda estimada</span>
+                                <strong id="managerLoss" class="metric-value metric-money">R$ 0,00</strong>
+                                <small class="metric-description">Produtos com risco de validade</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body d-flex gap-3">
+                            <div class="metric-icon metric-danger">!</div>
+                            <div>
+                                <span class="metric-label">Perdas críticas</span>
+                                <strong id="managerCritical" class="metric-value">0</strong>
+                                <small class="metric-description">Alto risco por validade</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body d-flex gap-3">
+                            <div class="metric-icon metric-rupture">↓</div>
+                            <div>
+                                <span class="metric-label">Risco de ruptura</span>
+                                <strong id="managerRupture" class="metric-value">0</strong>
+                                <small class="metric-description">Cobertura insuficiente</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card metric-card h-100">
+                        <div class="card-body d-flex gap-3">
+                            <div class="metric-icon metric-warning">✓</div>
+                            <div>
+                                <span class="metric-label">Decisões pendentes</span>
+                                <strong id="managerPending" class="metric-value">0</strong>
+                                <small class="metric-description">Recomendações para revisar</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card app-card mb-4">
+                <div class="card-body">
+                    <span class="eyebrow">APROVAÇÕES</span>
+                    <h2 class="h6 fw-bold mt-2 mb-1">Recomendações pendentes</h2>
+                    <p class="small text-secondary mb-3">O gestor pode aceitar, simular outra ação ou recusar a recomendação.</p>
+                    <div id="managerApprovalList"></div>
+                </div>
+            </div>
+
+            <div class="card app-card">
+                <div class="card-body p-0">
+                    <div class="p-4 border-bottom">
+                        <span class="eyebrow">VISÃO GERAL</span>
+                        <h2 class="h6 fw-bold mt-2 mb-1">Produtos em atenção</h2>
+                        <p class="small text-secondary mb-0">Perdas por validade e risco de ruptura em uma única visão.</p>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 app-table">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>EAN</th>
+                                    <th>Estoque</th>
+                                    <th>Prazo</th>
+                                    <th>Sobra prevista</th>
+                                    <th>Perda estimada</th>
+                                    <th>Situação</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="managerProductTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content app-modal">
+                <div class="modal-header border-0 pb-0">
+                    <div id="productModalHeader"></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div id="productModalBody" class="modal-body pt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="analysisModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content app-modal">
+                <div class="modal-header border-0">
+                    <div>
+                        <div class="ai-icon mb-3">✦</div>
+                        <span class="eyebrow">ANÁLISE INTELIGENTE</span>
+                        <h2 class="h5 fw-bold mt-2 mb-1">Solicitar recomendação?</h2>
+                        <p id="analysisProduct" class="small text-secondary mb-0"></p>
+                    </div>
+                    <button type="button" class="btn-close" data-action="cancel-analysis" aria-label="Fechar"></button>
+                </div>
+
+                <div class="modal-body pt-0">
+                    <p class="small text-secondary">O sistema analisará o produto antes de enviar uma sugestão ao gestor.</p>
+
+                    <div class="analysis-step">
+                        <div class="analysis-number">1</div>
+                        <div>
+                            <strong>Analisar a situação atual</strong>
+                            <p>Estoque, validade, giro, sobra prevista e perda estimada.</p>
+                        </div>
+                    </div>
+
+                    <div class="analysis-step">
+                        <div class="analysis-number">2</div>
+                        <div>
+                            <strong>Comparar cenários</strong>
+                            <p>Manter o preço ou avaliar descontos de 10%, 20% e 30%.</p>
+                        </div>
+                    </div>
+
+                    <div class="analysis-step">
+                        <div class="analysis-number">3</div>
+                        <div>
+                            <strong>Sugerir uma ação</strong>
+                            <p>Buscar equilíbrio entre redução de perdas e preservação da margem.</p>
+                        </div>
+                    </div>
+
+                    <div class="analysis-step">
+                        <div class="analysis-number">4</div>
+                        <div>
+                            <strong>Enviar ao gestor</strong>
+                            <p>O gestor poderá aceitar, alterar o desconto ou recusar a sugestão.</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning small mt-3 mb-0">
+                        <strong>Nenhuma promoção será aplicada automaticamente.</strong><br>
+                        A decisão final permanece com o gestor.
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button class="btn btn-outline-secondary" data-action="cancel-analysis">Cancelar</button>
+                    <button class="btn btn-dark" data-action="confirm-analysis">Solicitar análise</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content app-modal">
+                <div class="modal-header border-0">
+                    <div>
+                        <span class="eyebrow">RECUSAR RECOMENDAÇÃO</span>
+                        <h2 class="h5 fw-bold mt-2 mb-1">Motivo da recusa</h2>
+                        <p class="small text-secondary mb-0">O encarregado poderá visualizar o motivo informado.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-action="cancel-reject"></button>
+                </div>
+
+                <div class="modal-body">
+                    <select id="rejectReason" class="form-select">
+                        <option>Margem muito baixa</option>
+                        <option>Ação comercial inadequada</option>
+                        <option>Produto será tratado de outra forma</option>
+                        <option>Necessário revisar os dados</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button class="btn btn-outline-secondary" data-action="cancel-reject">Cancelar</button>
+                    <button class="btn btn-danger" data-action="confirm-reject">Confirmar recusa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"
+    ></script>
+
+    <script type="module" src="./js/app.js"></script>
+</body>
+
+</html>
